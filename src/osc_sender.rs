@@ -88,7 +88,7 @@ pub fn packet_to_buffer(packet: OscPacket) -> Vec<u8> {
 
 
 	match packet {
-		OscMessage{ addr: addr, args: args} => {
+		OscMessage{addr, args} => {
 
 			//--- write the address string
 
@@ -115,7 +115,7 @@ pub fn packet_to_buffer(packet: OscPacket) -> Vec<u8> {
 				write_arg(&mut buf, arg);
 			}
 		},
-		OscBundle{time_tag: time_tag, conts: conts} => {
+		OscBundle{time_tag, conts} => {
 
 			//--- write the bundle identifier string
 			buf.write_str("#bundle\0");

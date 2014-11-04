@@ -87,8 +87,8 @@ pub enum OscPacket {
 /// Find out if a packet contains a specified OSC address.
 pub fn packet_has_addr(packet: &OscPacket, addr_match: &str) -> bool {
 	match *packet {
-		OscMessage{addr: ref addr, args: _} => addr_match == addr.as_slice(),
-		OscBundle{time_tag: _, conts: ref conts} => {
+		OscMessage{ref addr, ..} => addr_match == addr.as_slice(),
+		OscBundle{time_tag: _, ref conts} => {
 			for subpacket in conts.iter() {
 				if packet_has_addr(subpacket, addr_match) { return true; }
 			}
@@ -102,7 +102,7 @@ pub fn packet_has_addr(packet: &OscPacket, addr_match: &str) -> bool {
 pub fn get_args_with_addr(packet: OscPacket, addr_match: &str) -> Option<Vec<OscArg>> {
 
 	match packet {
-		OscMessage{addr: addr, args: args} => {
+		OscMessage{addr, args} => {
 			if addr_match == addr.as_slice() {
 				Some(args)
 			}
@@ -110,7 +110,7 @@ pub fn get_args_with_addr(packet: OscPacket, addr_match: &str) -> Option<Vec<Osc
 				None
 			}
 		},
-		OscBundle{ time_tag: _, conts: conts} => {
+		OscBundle{ time_tag: _, conts} => {
 			let mut arg_vec = Vec::new();
 			for subpacket in conts.into_iter() {
 				match get_args_with_addr(subpacket, addr_match) {
